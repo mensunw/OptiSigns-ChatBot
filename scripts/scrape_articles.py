@@ -2,6 +2,7 @@
 
 import os
 import requests
+import re
 from dotenv import load_dotenv
 from markdownify import markdownify as md
 
@@ -15,11 +16,24 @@ def fetch_articles():
     """
     Fetch article list using Zendesk API
     """
-    url = f"https://{ZENDESK_SUBDOMAIN}/api/v2/help_center/en-us/articles.json" # conventional zendesk api endpoint for articles
+    url = f"https://{ZENDESK_SUBDOMAIN}/api/v2/help_center/en-us/articles.json" # conventional zendesk api endpoint for articles (GET /api/v2/help_center/{locale}/articles)
     response = requests.get(url)
     response.raise_for_status()
     data = response.json()
     return data['articles']
+
+def parse_title(title):
+    """
+    Parses title for unwanted characters
+    """
+    slug = title.lower()
+    # replace anything NOT a word character or hyphen with a hyphen
+    slug = re.sub(r"[^\w\-]", "-", slug) 
+    # replace multiple hyphens with a single hyphen 
+    slug = re.sub(r"-+", "-", slug)
+    # remove leading/trailing hyphens        
+    slug = slug.strip("-")               
+    return slug  
 
 def html_to_markdown(html_content):
     """
@@ -49,7 +63,7 @@ def main():
 
       # convert them to md and save them
       for article in articles:
-        slug = article['title'].lower().replace(" ", "-").replace("/", "-").replace("?", "-") # may need to include other characters later
+        slug = parse_title(article['title'])
         html_body = article['body']
         markdown_text = html_to_markdown(html_body)
         save_markdown(slug, markdown_text)
