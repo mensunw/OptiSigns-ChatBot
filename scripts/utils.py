@@ -3,6 +3,7 @@
 import hashlib
 import os
 import json
+import datetime
 
 # note: i designed these helper functions with "main.py" mainly in mind, but easily configurable by entering directory/filepath
 
@@ -50,15 +51,25 @@ def detect_changes(old_hashes, new_hashes):
 
     return added, updated, skipped
 
-def log_results(added, updated, skipped):
+def log_results(added, updated, skipped, output_path="run_logs.txt"):
     """
     Print log summary of the scraping run's added, updated, and skipped articles
     """
-    print("\n=== Job Summary ===")
-    print(f"Added: {len(added)} files")
-    print(f"Updated: {len(updated)} files")
-    print(f"Skipped: {len(skipped)} files")
-    print("===================")
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    summary = (
+        "=== Job Summary ===\n"
+        f"Added: {len(added)} files\n"
+        f"Updated: {len(updated)} files\n"
+        f"Skipped: {len(skipped)} files\n"
+        f"Completed on: {now}\n"
+        "===================\n\n"
+    )
+    print(summary)
+
+    # appends to output log, creates one if it does not exist
+    with open(output_path, "a", encoding="utf-8") as f:
+      f.write(summary)
 
 def save_json(data, filepath="article_hashes.json", ):
     """
