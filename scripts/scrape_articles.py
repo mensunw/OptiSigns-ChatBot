@@ -26,12 +26,12 @@ def parse_title(title):
     """
     slug = title.lower()
     # replace anything NOT a word character or hyphen with a hyphen
-    slug = re.sub(r"[^\w\-]", "-", slug) 
+    slug = re.sub(r"[^\w\-]", "-", slug)
     # replace multiple hyphens with a single hyphen 
     slug = re.sub(r"-+", "-", slug)
-    # remove leading/trailing hyphens        
-    slug = slug.strip("-")               
-    return slug  
+    # remove leading/trailing hyphens
+    slug = slug.strip("-")
+    return slug
 
 def html_to_markdown(html_content):
     """
