@@ -10,8 +10,6 @@ load_dotenv()
 
 ZENDESK_SUBDOMAIN = os.getenv("ZENDESK_SUBDOMAIN") 
 
-ARTICLES_DIR = "../articles" 
-
 def fetch_articles():
     """
     Fetch article list using Zendesk API
@@ -41,32 +39,36 @@ def html_to_markdown(html_content):
     """
     return md(html_content, strip=["nav", "footer", "header", "aside"]) # "aside" usually contains ads
 
-def save_markdown(slug, markdown_text):
+def save_articles(articles, articles_dir="../articles"):
     """
-    Save the cleaned markdown to a file
+    Save the articles after cleaning
     """
 
     # might delete the directory for easy reset
-    if not os.path.exists(ARTICLES_DIR):
-        os.makedirs(ARTICLES_DIR)
+    if not os.path.exists(articles_dir):
+        os.makedirs(articles_dir)
 
-    filepath = os.path.join(ARTICLES_DIR, f"{slug}.md")
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(markdown_text)
-    print(f"Saved {filepath}")
-
-def main():
-    try:
-      # fetch articles
-      articles = fetch_articles()
-      print(f"Fetched {len(articles)} articles.")
-
-      # convert them to md and save them
-      for article in articles:
+    # convert them to md and save them
+    for article in articles:
         slug = parse_title(article['title'])
         html_body = article['body']
         markdown_text = html_to_markdown(html_body)
-        save_markdown(slug, markdown_text)
+
+        filepath = os.path.join(articles_dir, f"{slug}.md")
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(markdown_text)
+        print(f"Saved {filepath}")
+    
+
+def main():
+    try:
+        # fetch articles
+        articles = fetch_articles()
+        print(f"Fetched {len(articles)} articles.")
+        # save the articles
+        save_articles(articles)
+        print(f"Saved the articles.")
+
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
