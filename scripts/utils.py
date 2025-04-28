@@ -4,7 +4,7 @@ import hashlib
 import os
 import json
 
-# note: i designed these helper functions with "main.py" mainly in mind, but easily configurable by entering directory
+# note: i designed these helper functions with "main.py" mainly in mind, but easily configurable by entering directory/filepath
 
 def compute_article_hashes(directory="articles"):
     """
