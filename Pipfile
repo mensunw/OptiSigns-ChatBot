@@ -5,9 +5,9 @@ name = "pypi"
 
 [packages]
 requests = "*"
-beautifulsoup4 = "*"
 python-dotenv = "*"
 markdownify = "*"
+openai = "*"
 
 [dev-packages]
 
