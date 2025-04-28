@@ -53,7 +53,7 @@ def detect_changes(old_hashes, new_hashes):
 
 def log_results(added, updated, skipped, output_path="run_logs.txt"):
     """
-    Print log summary of the scraping run's added, updated, and skipped articles
+    Print and logs log summary of the scraping run's added, updated, and skipped articles, along with current time
     """
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
 
