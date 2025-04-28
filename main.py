@@ -3,7 +3,7 @@
 import os
 from scripts.scrape_articles import fetch_articles, save_articles  
 from scripts.upload_to_openai import upload_file
-from scripts.utils import compute_article_hashes, load_json, detect_changes, log_results, save_json
+from scripts.utils import compute_article_hashes, load_json, detect_changes, log_results, save_json #, delete_all_openai_files
 
 from dotenv import load_dotenv
 
@@ -13,6 +13,8 @@ OLD_HASH_FILE = "article_hashes.json"
 load_dotenv()
 
 def main():
+  #delete_all_openai_files()
+  
   try:
     # scrape articles
     print("Scraping articles...")
@@ -50,6 +52,7 @@ def main():
     log_results(added,updated,skipped)
   except Exception as e:
     print(f"An unexpected error occurred: {e}")
+    
 
 if __name__ == "__main__":
   main()

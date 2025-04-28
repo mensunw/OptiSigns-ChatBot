@@ -4,6 +4,10 @@ import hashlib
 import os
 import json
 import datetime
+from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # note: i designed these helper functions with "main.py" mainly in mind, but easily configurable by entering directory/filepath
 
@@ -77,3 +81,18 @@ def save_json(data, filepath="article_hashes.json", ):
     """
     with open(filepath, "w", encoding="utf-8") as f:
       json.dump(data, f, indent=2)
+
+def delete_all_openai_files():
+    """
+    Deletes all files with the purpose of "assistants"
+    from: https://community.openai.com/t/deleting-everything-in-storage/664945/2
+    """
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    confirmation = input("This will delete all OpenAI files with purpose 'assistants'.\n Type 'YES' to confirm: ")
+    if confirmation == "YES":
+      response = client.files.list(purpose="assistants")
+      for file in response.data:
+        client.files.delete(file.id)
+      print("All files with purpose 'assistants' have been deleted.")
+    else:
+      print("Operation cancelled.")
