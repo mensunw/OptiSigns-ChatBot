@@ -2,7 +2,7 @@ name: Run OptiSigns Scraper Daily
 
 on:
   schedule:
-    - cron: '0 2 * * *' # schedules to run every day at 6am UTC
+    - cron: '37 2 * * *' # schedules to run every day at 6am UTC
   workflow_dispatch:     
 
 permissions:
