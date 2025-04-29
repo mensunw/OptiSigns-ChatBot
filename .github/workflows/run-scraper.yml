@@ -20,19 +20,21 @@ jobs:
         run: |
           docker build -t optisigns-scraper .
 
-      - name: Run Docker container
-        run: |
-          docker run \
-            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-            -e ZENDESK_SUBDOMAIN=${{ secrets.ZENDESK_SUBDOMAIN }} \
-            optisigns-scraper
+          - name: Run Docker container
+          run: |
+            docker run \
+              -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+              -e ZENDESK_SUBDOMAIN=${{ secrets.ZENDESK_SUBDOMAIN }} \
+              -v ${{ github.workspace }}/artifacts:/output \
+              optisigns-scraper
+        
       - name: Append run log to cumulative log
         run: |
           mkdir -p artifacts
-          touch artifacts/log.txt  
+          touch artifacts/log.txt
           echo "" >> artifacts/log.txt
           echo "==== Run on $(date -u) ====" >> artifacts/log.txt
-          cat run_log.txt >> artifacts/log.txt
+            cat artifacts/run_log.txt >> artifacts/log.txt
 
       - name: Commit updated cumulative log
         run: |

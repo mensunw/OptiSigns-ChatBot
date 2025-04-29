@@ -55,7 +55,7 @@ def detect_changes(old_hashes, new_hashes):
 
     return added, updated, skipped
 
-def log_results(added, updated, skipped, output_path="run_log.txt"):
+def log_results(added, updated, skipped, output_path="/output/run_log.txt"):
     """
     Print and logs log summary of the scraping run's added, updated, and skipped articles, along with current time
     """
