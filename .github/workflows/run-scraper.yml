@@ -1,0 +1,45 @@
+name: Run OptiSigns Scraper Daily
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # schedules to run every day at 6am UTC
+  workflow_dispatch:     
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t optisigns-scraper .
+
+      - name: Run Docker container
+        run: |
+          docker run \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            -e ZENDESK_SUBDOMAIN=${{ secrets.ZENDESK_SUBDOMAIN }} \
+            optisigns-scraper
+      - name: Append run log to cumulative log
+        run: |
+          mkdir -p artifacts
+          touch artifacts/log.txt  
+          echo "" >> artifacts/log.txt
+          echo "==== Run on $(date -u) ====" >> artifacts/log.txt
+          cat run_log.txt >> artifacts/log.txt
+
+      - name: Commit updated cumulative log
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add artifacts/log.txt
+          git commit -m "Update cumulative run log for $(date -u)"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
