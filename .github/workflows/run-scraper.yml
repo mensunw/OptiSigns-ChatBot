@@ -5,6 +5,9 @@ on:
     - cron: '0 6 * * *' # schedules to run every day at 6am UTC
   workflow_dispatch:     
 
+permissions:
+  contents: write
+
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
@@ -13,28 +16,30 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'  
 
-      - name: Build Docker image
+      - name: Install dependencies
         run: |
-          docker build -t optisigns-scraper .
+          pip install pipenv
+          pipenv install --deploy --ignore-pipfile
 
-      - name: Run Docker container
+      - name: Run scraper
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ZENDESK_SUBDOMAIN: ${{ secrets.ZENDESK_SUBDOMAIN }}
         run: |
-          docker run \
-            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-            -e ZENDESK_SUBDOMAIN=${{ secrets.ZENDESK_SUBDOMAIN }} \
-            -v ${{ github.workspace }}/artifacts:/output \
-            optisigns-scraper
-        
+          pipenv run python main.py
+
       - name: Append run log to cumulative log
         run: |
           mkdir -p artifacts
           touch artifacts/log.txt
           echo "" >> artifacts/log.txt
           echo "==== Run on $(date -u) ====" >> artifacts/log.txt
-            cat artifacts/run_log.txt >> artifacts/log.txt
+          cat run_log.txt >> artifacts/log.txt
 
       - name: Commit updated cumulative log
         run: |
