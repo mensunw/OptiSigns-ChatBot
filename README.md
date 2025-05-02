@@ -29,3 +29,6 @@ pipenv run python main.py
 
 ## Chunking Strategy 
 When creating the Vector Store, I relied on OpenAI’s default chunking behavior. OpenAI automatically splits each uploaded Markdown file into smaller chunks optimized for semantic search, typically about 800 tokens per chunk and an overlap of 400 tokens (from OpenAI's official documentation). Embeddings were generated using the text-embedding-3-large model (256 dimensions), and the Assistant retrieves up to 20 relevant chunks per query.
+
+## Special Thanks
+Big thanks to Henry Le for creating the challenge and offering helpful guidance along the way!
