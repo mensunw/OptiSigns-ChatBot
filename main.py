@@ -2,7 +2,7 @@
 
 import os
 from scripts.scrape_articles import fetch_articles, save_articles  
-from scripts.upload_to_openai import upload_file
+from scripts.upload_to_openai import upload_and_store
 from scripts.utils import compute_article_hashes, load_json, detect_changes, log_results, save_json #, delete_all_openai_files
 
 from dotenv import load_dotenv
@@ -37,11 +37,8 @@ def main():
     # upload added/updated articles
     if added or updated:
       print(f"Uploading {len(added) + len(updated)} new/updated articles...")
-      # go through each added/updated article and upload them
-      for filename in added + updated:
-        filepath = os.path.join("articles", filename)
-        file_id = upload_file(filepath)
-        print(f"Uploaded {filename} as file_id {file_id}")
+      # go through each added/updated article and upload them and store them
+      upload_and_store(added + updated)
     else:
       print("No new or updated articles to upload.")
 

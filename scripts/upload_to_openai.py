@@ -34,6 +34,18 @@ def create_vector_store(file_ids):
     )
     return vector_store.id
 
+def upload_and_store(filenames):
+    ''''''
+    file_ids = []
+    for filename in filenames:
+        filepath = os.path.join("articles", filename)
+        file_id = upload_file(filepath)
+        print(f"Uploaded {filename} as file_id {file_id}")
+        file_ids.append(file_id)
+    vector_store_id = create_vector_store(file_ids)
+    print(f"Vector Store ID: {vector_store_id}")
+    print(f"Uploaded {len(file_ids)} files into Vector Store.")
+
 def main():
     try:
         file_ids = []
